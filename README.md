@@ -1,4 +1,4 @@
-d3.js_tests
-===========
+simple-html5-template
+=====================
 
-Testing the D3.JS framework.
+Bare bones HTML5 template with jQuery, and Require JS.

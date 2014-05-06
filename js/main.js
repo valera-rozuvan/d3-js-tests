@@ -88,53 +88,27 @@
     }
 
     function bindData(elementSelector, data, selectAll, elementIndex) {
-        var selectFunc = 'selectAll',
-            el;
-
-        // If we don't want to select all elements, but only some
-        // specific element (we have the element's index).
-        if (!selectAll && elementIndex) {
-            if (typeof elementIndex === 'number' && elementIndex > 0) {
-                elementSelector += ':nth-of-type(' + elementIndex + ')';
-            }
-        } else if (!selectAll) {
-            // Select a single element (the first one that is found).
-            selectFunc = 'select';
-        }
-
-        // Try selecting the element.
-        el = d3[selectFunc](elementSelector);
-
-        // If our selector returned something, perform styling.
-        if (el.length) {
-            el.data(data);
-        }
+        selectElements(
+            elementSelector,
+            function (el) {
+                el.data(data);
+            },
+            selectAll,
+            elementIndex
+        );
     }
 
     function changeCssProperty(
         elementSelector, cssPropertyName, cssValue, selectAll, elementIndex
     ) {
-        var selectFunc = 'selectAll',
-            el;
-
-        // If we don't want to select all elements, but only some
-        // specific element (we have the element's index).
-        if (!selectAll && elementIndex) {
-            if (typeof elementIndex === 'number' && elementIndex > 0) {
-                elementSelector += ':nth-of-type(' + elementIndex + ')';
-            }
-        } else if (!selectAll) {
-            // Select a single element (the first one that is found).
-            selectFunc = 'select';
-        }
-
-        // Try selecting the element.
-        el = d3[selectFunc](elementSelector);
-
-        // If our selector returned something, perform styling.
-        if (el.length) {
-            el.style(cssPropertyName, cssValue);
-        }
+        selectElements(
+            elementSelector,
+            function (el) {
+                el.style(cssPropertyName, cssValue);
+            },
+            selectAll,
+            elementIndex
+        );
     }
 
     function changeColorE(elementSelector, colorName, selectAll, elementIndex) {
@@ -150,5 +124,32 @@
             elementSelector, 'background-color', colorName, selectAll,
             elementIndex
         );
+    }
+
+    function selectElements(
+        elementSelector, callback, selectAll, elementIndex
+    ) {
+        var selectFunc = 'selectAll',
+            el;
+
+        // If we don't want to select all elements, but only some
+        // specific element (we have the element's index).
+        if (!selectAll && elementIndex) {
+            if (typeof elementIndex === 'number' && elementIndex > 0) {
+                elementSelector += ':nth-of-type(' + elementIndex + ')';
+            }
+        } else if (!selectAll) {
+            // Select a single element (the first one that is found).
+            selectFunc = 'select';
+        }
+
+        // Try selecting the element.
+        el = d3[selectFunc](elementSelector);
+
+        // If our selector returned something, invoke the callback,
+        // passing it the selected element(s).
+        if (el.length) {
+            callback(el);
+        }
     }
 }).call(this, window.require);
